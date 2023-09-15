@@ -1,10 +1,9 @@
-import PropTypes from 'prop-types';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import MediaQuery from 'react-responsive';
 import { withTranslation } from 'react-i18next';
+import PropTypes from 'prop-types';
 
-import browserHistory from '../../../browserHistory';
 import Button from '../../../common/Button';
 import Nav from '../../IDE/components/Header/Nav';
 import Overlay from '../../App/components/Overlay';
@@ -27,20 +26,8 @@ import DashboardTabSwitcherPublic, {
 function DashboardView(props) {
   const [collectionCreateVisible, setCollectionCreateVisible] = useState(false);
 
-  useEffect(() => {
-    // You can add any componentDidMount logic here if needed.
-  }, []);
-
-  const closeAccountPage = () => {
-    browserHistory.push(props.previousPath);
-  };
-
   const createNewSketch = () => {
     props.newProject();
-  };
-
-  const gotoHomePage = () => {
-    browserHistory.push('/');
   };
 
   const selectedTabKey = () => {
@@ -63,9 +50,7 @@ function DashboardView(props) {
     return props.user.username;
   };
 
-  const isOwner = () => {
-    return props.user.username === props.params.username;
-  };
+  const isOwner = () => props.user.username === props.params.username;
 
   const toggleCollectionCreate = () => {
     setCollectionCreateVisible((prevState) => !prevState);
@@ -111,7 +96,9 @@ function DashboardView(props) {
         );
       case TabKey.sketches:
       default:
-        return <SketchList key={username} mobile={mobile} username={username} />;
+        return (
+          <SketchList key={username} mobile={mobile} username={username} />
+        );
     }
   };
 
@@ -168,6 +155,10 @@ const mapDispatchToProps = {
   ...ProjectActions
 };
 
+DashboardView.defaultProps = {
+  user: null // Provide an appropriate default value
+};
+
 DashboardView.propTypes = {
   newProject: PropTypes.func.isRequired,
   location: PropTypes.shape({
@@ -176,7 +167,6 @@ DashboardView.propTypes = {
   params: PropTypes.shape({
     username: PropTypes.string.isRequired
   }).isRequired,
-  previousPath: PropTypes.string.isRequired,
   user: PropTypes.shape({
     username: PropTypes.string
   }),
